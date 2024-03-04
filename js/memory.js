@@ -56,3 +56,10 @@ export var game = function(){
         }
     }
 }();
+
+export var wind_move = function(){
+
+    
+    window.location.assign("./html/game.html");
+
+}
