@@ -30,7 +30,24 @@ export var game = function(){
             items = items.concat(items);
             items.sort(() => Math.random() - 0.5); // Aleatòria
 
-            return items.map(item => Object.create(card, {front: {value:item}, callback: {value:call}}));
+          
+            var llistar_mostrar = items.map(item => Object.create(card, {front: {value:item}, callback: {value:call}}));
+ 
+            
+            //Les cartes es revelen durant 1 segon
+            for(var i = 0;i < items.length; i++){
+                llistar_mostrar[i].pointer = $('#c'+i);
+                llistar_mostrar[i].pointer.attr("src", card.current);
+                llistar_mostrar[i].goFront();  
+                setTimeout(() => {
+                    console.log("Ha pasado 1 segundo")
+                }, 1000); 
+                llistar_mostrar[i].goBack(); 
+            }
+            return llistar_mostrar;
+
+
+
         },
         click: function (card){
             if (!card.clickable) return;
