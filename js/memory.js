@@ -29,6 +29,7 @@ export var game = function(){
             items = items.slice(0, pairs); // Agafem els primers
             items = items.concat(items);
             items.sort(() => Math.random() - 0.5); // Aleatòria
+
             return items.map(item => Object.create(card, {front: {value:item}, callback: {value:call}}));
         },
         click: function (card){
@@ -57,9 +58,9 @@ export var game = function(){
     }
 }();
 
-export var wind_move = function(){
+export var mostrar_inici = function(){
 
-    
-    window.location.assign("./html/game.html");
+
+   //mostrar les cartes 1 segon abans de començar la partida
 
 }
