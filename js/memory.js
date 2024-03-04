@@ -17,9 +17,9 @@ export var game = function(){
             this.callback();
         }
     };
-
+    var options = JSON.parse(localStorage.options||JSON.stringify(default_options));
     var lastCard;
-    var pairs = 2;
+    var pairs = options.pairs;
     var points = 100;
 
     return {
