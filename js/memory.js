@@ -36,13 +36,13 @@ export var game = function(){
             var llistar_mostrar = items.map(item => Object.create(card, {front: {value:item}, callback: {value:call}}));
  
             // Pendent modificar el temps segons la dificultat, per aixo cal guardar be les opcions
-            if(options.difficulty = "normal"){
+            /*if(options.difficulty = "normal"){
                 console.log("normal");
                 time = 1000;
             } else if (options.difficulty = "hard") {
                 console.log("dificil");
                 time = 500;
-            }
+            }*/
 
             //Les cartes es revelen durant 1 segon
             for(var i = 0;i < items.length; i++){
