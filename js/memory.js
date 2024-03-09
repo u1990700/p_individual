@@ -22,7 +22,7 @@ export var game = function(){
     var pairs = options.pairs;
     var points = 100;
     var time = 1000;
-
+    var lostPoints = 25;
 
     return {
         init: function (call){
@@ -39,12 +39,15 @@ export var game = function(){
             if(options.difficulty == "normal"){
                 console.log("normal");
                 time = 1000;
+                lostPoints=25;
             } else if (options.difficulty == "hard") {
                 console.log("dificil");
                 time = 500;
+                lostPoints = 50;
             } else if (options.difficulty == "easy") {
                 console.log("facil");
                 time = 2000;
+                lostPoints= 10;
             }
 
             //Les cartes es revelen durant 1 segon
@@ -75,7 +78,8 @@ export var game = function(){
                 }
                 else{
                     [card, lastCard].forEach(c=>c.goBack());
-                    points-=25;
+                    points-=lostPoints;
+                    console.log(points);
                     if (points <= 0){
                         alert ("Has perdut");
                         window.location.replace("../");
