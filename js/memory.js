@@ -4,16 +4,19 @@ export var game = function(){
     const card = {
         current: back,
         clickable: true,
+        flipped: false, // Nueva propiedad para llevar un seguimiento de si la carta está volteada
         goBack: function (){
             setTimeout(() => {
                 this.current = back;
                 this.clickable = true;
                 this.callback();
+                this.flipped = false; // Reiniciar la propiedad flipped cuando se da vuelta hacia atrás
             }, 1000);
         },
         goFront: function (){
             this.current = this.front;
             this.clickable = false;
+            this.flipped = true; // Establecer la propiedad flipped cuando se voltea hacia adelante
             this.callback();
         }
     };
@@ -26,31 +29,27 @@ export var game = function(){
 
     return {
         init: function (call){
-            var items = resources.slice(); // Copiem l'array
-            items.sort(() => Math.random() - 0.5); // Aleatòria
-            items = items.slice(0, pairs); // Agafem els primers
+            var items = resources.slice(); // Copiamos el array
+            items.sort(() => Math.random() - 0.5); // Aleatorio
+            items = items.slice(0, pairs); // Tomamos las primeras
             items = items.concat(items);
-            items.sort(() => Math.random() - 0.5); // Aleatòria
+            items.sort(() => Math.random() - 0.5); // Aleatorio
 
-          
             var llistar_mostrar = items.map(item => Object.create(card, {front: {value:item}, callback: {value:call}}));
  
-            // Pendent modificar el temps segons la dificultat, per aixo cal guardar be les opcions
+            // Ajuste del tiempo según la dificultad
             if(options.difficulty == "normal"){
-                console.log("normal");
                 time = 1000;
                 lostPoints=25;
             } else if (options.difficulty == "hard") {
-                console.log("dificil");
                 time = 500;
                 lostPoints = 50;
             } else if (options.difficulty == "easy") {
-                console.log("facil");
                 time = 2000;
                 lostPoints= 10;
             }
 
-            //Les cartes es revelen durant 1 segon
+            // Las cartas se revelan durante 1 segundo
             for(var i = 0;i < items.length; i++){
                 llistar_mostrar[i].pointer = $('#c'+i);
                 llistar_mostrar[i].pointer.attr("src", card.current);
@@ -61,18 +60,17 @@ export var game = function(){
                 llistar_mostrar[i].goBack(); 
             }
             return llistar_mostrar;
-
-
-
         },
         click: function (card){
-            if (!card.clickable) return;
-            card.goFront();
-            if (lastCard){ // Segona carta
+            if (!card.clickable || card.flipped) return; // Si la carta no es clickeable o ya está volteada, no hacer nada
+            
+            card.goFront();   
+
+            if (lastCard){ // Segunda carta   
                 if (card.front === lastCard.front){
                     pairs--;
                     if (pairs <= 0){
-                        alert("Has guanyat amb " + points + " punts!");
+                        alert("Has ganado con " + points + " puntos!");
                         window.location.replace("../");
                     }
                 }
@@ -81,11 +79,12 @@ export var game = function(){
                     points-=lostPoints;
                     console.log(points);
                     if (points <= 0){
-                        alert ("Has perdut");
+                        alert ("Has perdido");
                         window.location.replace("../");
                     }
                 }
                 lastCard = null;
+                
             }
             else lastCard = card; // Primera carta
         }
@@ -93,8 +92,5 @@ export var game = function(){
 }();
 
 export var mostrar_inici = function(){
-
-
-   //mostrar les cartes 1 segon abans de començar la partida
-
+    //mostrar les cartes 1 segon abans de començar la partida
 }
