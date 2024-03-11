@@ -14,7 +14,6 @@ export var game = function(){
         goFront: function (){
             this.current = this.front;
             this.clickable = false;
-            //this.flipped = true; // Establecer la propiedad flipped cuando se voltea hacia adelante
             this.callback();
         }
     };
