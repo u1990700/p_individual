@@ -1,11 +1,12 @@
 h1{
     color: #f5f4f4;
     margin-bottom: 20px;
-    margin-left: 800px;
+    margin-left: 600px;
     margin-top: 50px;
 }
 
 body {
+    color: white;
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     background-image: url("../resources/background_menu.jpg");
