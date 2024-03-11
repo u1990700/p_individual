@@ -4,19 +4,17 @@ export var game = function(){
     const card = {
         current: back,
         clickable: true,
-        flipped: false, // Nueva propiedad para llevar un seguimiento de si la carta está volteada
         goBack: function (){
             setTimeout(() => {
                 this.current = back;
                 this.clickable = true;
                 this.callback();
-                this.flipped = false; // Reiniciar la propiedad flipped cuando se da vuelta hacia atrás
             }, 1000);
         },
         goFront: function (){
             this.current = this.front;
             this.clickable = false;
-            this.flipped = true; // Establecer la propiedad flipped cuando se voltea hacia adelante
+            //this.flipped = true; // Establecer la propiedad flipped cuando se voltea hacia adelante
             this.callback();
         }
     };
@@ -26,6 +24,7 @@ export var game = function(){
     var points = 100;
     var time = 1000;
     var lostPoints = 25;
+    var flippedCount = 0; // Contador de cartas volteadas
 
     return {
         init: function (call){
@@ -62,9 +61,10 @@ export var game = function(){
             return llistar_mostrar;
         },
         click: function (card){
-            if (!card.clickable || card.flipped) return; // Si la carta no es clickeable o ya está volteada, no hacer nada
+            if (!card.clickable || flippedCount >= 2) return; // Si la carta no es clickeable, ya está volteada o ya hay dos cartas volteadas, no hacer nada
             
             card.goFront();   
+            flippedCount++; // Incrementar el contador de cartas volteadas
 
             if (lastCard){ // Segunda carta   
                 if (card.front === lastCard.front){
@@ -85,6 +85,9 @@ export var game = function(){
                 }
                 lastCard = null;
                 
+                setTimeout(() => {
+                    flippedCount = 0; // Reiniciar el contador de cartas volteadas
+                }, 1000);
             }
             else lastCard = card; // Primera carta
         }
