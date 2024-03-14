@@ -24,6 +24,8 @@ export var game = function(){
     var time = 1000;
     var lostPoints = 25;
     var flippedCount = 0; // Contador de cartas volteadas
+    var punts = $('#score');
+    punts.value = points;
 
     return {
         init: function (call){
@@ -70,13 +72,15 @@ export var game = function(){
                     pairs--;
                     if (pairs <= 0){
                         alert("Has ganado con " + points + " puntos!");
-                        window.location.replace("../");
+                        window.location.assign("../");
                     }
                 }
                 else{
                     [card, lastCard].forEach(c=>c.goBack());
                     points-=lostPoints;
-                    console.log(points);
+                    punts.value = points;
+                    console.log(points); //mostrar puntuacion
+
                     if (points <= 0){
                         alert ("Has perdido");
                         window.location.replace("../");
