@@ -2,7 +2,7 @@ addEventListener('load', function() {
     document.getElementById('play').addEventListener('click', 
     function(){
         sessionStorage.removeItem("save");
-        window.location.assign("./html/phasergame.html");
+        window.location.assign("./html/escollirmode.html");
     });
 
     document.getElementById('saves').addEventListener('click', 
@@ -26,8 +26,8 @@ addEventListener('load', function() {
         window.location.assign("./html/options.html");
     });
 
-    document.getElementById('exit').addEventListener('click', 
+    document.getElementById('ranking').addEventListener('click', 
     function(){
-        console.warn("No es pot sortir!");
+        window.location.assign("./html/ranking.html");
     });
 });
