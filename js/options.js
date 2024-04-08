@@ -32,5 +32,5 @@ $('#default').on('click',function(){
 
 $('#apply').on('click',function(){
     options.applyChanges();
-    location.replace("../");
+    location.assign("../");
 });
