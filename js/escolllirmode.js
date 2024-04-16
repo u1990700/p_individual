@@ -1,7 +1,7 @@
 addEventListener('load', function() {
     document.getElementById('mode1').addEventListener('click', 
     function(){
-        window.location.assign("./phasergame.html");
+        window.location.assign("./mode1.html");
          //Configurar a mode 1
     });
 

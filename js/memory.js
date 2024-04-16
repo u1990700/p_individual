@@ -29,10 +29,12 @@ export var game = function(){
         }
     };
 
+    var options = JSON.parse(localStorage.options||JSON.stringify(default_options));
     var lastCard;
-    var pairs = 2;
+    var pairs = options.pairs;
     var points = 100;
     var cards = []; // Llistat de cartes
+
 
     var mix = function(){
         var items = resources.slice(); // Copiem l'array
