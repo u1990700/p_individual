@@ -35,7 +35,6 @@ export var game = function(){
     var points = 100;
     var cards = []; // Llistat de cartes
 
-
     var mix = function(){
         var items = resources.slice(); // Copiem l'array
         items.sort(() => Math.random() - 0.5); // Aleatòria
@@ -75,6 +74,7 @@ export var game = function(){
                     pairs--;
                     if (pairs <= 0){
                         alert("Has guanyat amb " + points + " punts!");
+                        
                         window.location.replace("../");
                     }
                 }
