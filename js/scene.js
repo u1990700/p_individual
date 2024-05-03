@@ -26,6 +26,9 @@ export class PlayScene extends Phaser.Scene{
             c.setInteractive();
             c.on('pointerup', ()=> gController.click(this.cards[i]));
         });
+
+
+        
     }
 
     update() {

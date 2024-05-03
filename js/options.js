@@ -1,3 +1,4 @@
+
 var options = function(){
     const default_options = {
         pairs:2,
@@ -32,5 +33,5 @@ $('#default').on('click',function(){
 
 $('#apply').on('click',function(){
     options.applyChanges();
-    location.assign("./phasergame.html");
+    location.replace("../");
 });
