@@ -29,37 +29,37 @@ export var game = function(){
 
     return {
         init: function (call){
-            var items = resources.slice(); // Copiamos el array
-            items.sort(() => Math.random() - 0.5); // Aleatorio
-            items = items.slice(0, pairs); // Tomamos las primeras
-            items = items.concat(items);
-            items.sort(() => Math.random() - 0.5); // Aleatorio
+                var items = resources.slice(); // Copiamos el array
+                items.sort(() => Math.random() - 0.5); // Aleatorio
+                items = items.slice(0, pairs); // Tomamos las primeras
+                items = items.concat(items);
+                items.sort(() => Math.random() - 0.5); // Aleatorio
 
-            var llistar_mostrar = items.map(item => Object.create(card, {front: {value:item}, callback: {value:call}}));
- 
-            // Ajuste del tiempo según la dificultad
-            if(options.difficulty == "normal"){
-                time = 1000;
-                lostPoints=25;
-            } else if (options.difficulty == "hard") {
-                time = 500;
-                lostPoints = 50;
-            } else if (options.difficulty == "easy") {
-                time = 2000;
-                lostPoints= 10;
-            }
+                var llistar_mostrar = items.map(item => Object.create(card, {front: {value:item}, callback: {value:call}}));
+    
+                // Ajuste del tiempo según la dificultad
+                if(options.difficulty == "normal"){
+                    time = 1000;
+                    lostPoints=25;
+                } else if (options.difficulty == "hard") {
+                    time = 500;
+                    lostPoints = 50;
+                } else if (options.difficulty == "easy") {
+                    time = 2000;
+                    lostPoints= 10;
+                }
 
-            // Las cartas se revelan durante 1 segundo
-            for(var i = 0;i < items.length; i++){
-                llistar_mostrar[i].pointer = $('#c'+i);
-                llistar_mostrar[i].pointer.attr("src", card.current);
-                llistar_mostrar[i].goFront();  
-                setTimeout(() => {
-                    console.log("Ha pasado 1 segundo")
-                }, 1000); 
-                llistar_mostrar[i].goBack(); 
-            }
-            return llistar_mostrar;
+                // Las cartas se revelan durante 1 segundo
+                for(var i = 0;i < items.length; i++){
+                    llistar_mostrar[i].pointer = $('#c'+i);
+                    llistar_mostrar[i].pointer.attr("src", card.current);
+                    llistar_mostrar[i].goFront();
+                    setTimeout(() => {
+                        console.log("Ha pasado 1 segundo")
+                    }, 1000);
+                    llistar_mostrar[i].goBack();
+                 }
+                 return llistar_mostrar;
         },
         click: function (card){
             if (!card.clickable || flippedCount >= 2) return; // Si la carta no es clickeable, ya está volteada o ya hay dos cartas volteadas, no hacer nada
