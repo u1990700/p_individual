@@ -44,7 +44,7 @@ export var game = function(){
     return {
         init: function (call){
             if (sessionStorage.save){ // Load game
-                let partida = JSON.parse(sessionStorage.save);
+                let partida = sessionStorage.save;
                 pairs = partida.pairs;
                 points = partida.points;
                 partida.cards.map(item=>{
@@ -121,7 +121,7 @@ export var game = function(){
                 console.log(localStorage.save);
             })
             .finally(()=>{
-                window.location.replace("../");
+              window.location.replace("../");
             });
         }
     }
