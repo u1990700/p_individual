@@ -31,7 +31,8 @@ $('#default').on('click',function(){
     options.defaultValues();
 });
 
-$('#apply').on('click',function(){
+
+$('#jugar').on('click',function(){
     options.applyChanges();
-    location.replace("../");
-});
+    location.replace("./phasergame.html");
+})

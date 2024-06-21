@@ -72,7 +72,7 @@ export var game = function(){
                     pairs--;
                     if (pairs <= 0){
                         alert("Has ganado con " + points + " puntos!");
-                        window.location.assign("../");
+                        window.location.assign("../"); //Aplicar nuevo nivel a partir de aqui
                     }
                 }
                 else{
