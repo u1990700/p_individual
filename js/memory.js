@@ -26,40 +26,38 @@ export var game = function(){
     var flippedCount = 0; // Contador de cartas volteadas
     var punts = $('#score');
     punts.value = points;
+    var cards = []; // Llistat de cartes
 
+    var mix = function(){
+        var items = resources.slice(); // Copiem l'array
+        items.sort(() => Math.random() - 0.5); // Aleatòria
+        items = items.slice(0, pairs); // Agafem els primers
+        items = items.concat(items);
+        return items.sort(() => Math.random() - 0.5); // Aleatòria
+    }
     return {
         init: function (call){
-                var items = resources.slice(); // Copiamos el array
-                items.sort(() => Math.random() - 0.5); // Aleatorio
-                items = items.slice(0, pairs); // Tomamos las primeras
-                items = items.concat(items);
-                items.sort(() => Math.random() - 0.5); // Aleatorio
-
-                var llistar_mostrar = items.map(item => Object.create(card, {front: {value:item}, callback: {value:call}}));
-    
-                // Ajuste del tiempo según la dificultad
-                if(options.difficulty == "normal"){
-                    time = 1000;
-                    lostPoints=25;
-                } else if (options.difficulty == "hard") {
-                    time = 500;
-                    lostPoints = 50;
-                } else if (options.difficulty == "easy") {
-                    time = 2000;
-                    lostPoints= 10;
-                }
-
-                // Las cartas se revelan durante 1 segundo
-                for(var i = 0;i < items.length; i++){
-                    llistar_mostrar[i].pointer = $('#c'+i);
-                    llistar_mostrar[i].pointer.attr("src", card.current);
-                    llistar_mostrar[i].goFront();
-                    setTimeout(() => {
-                        console.log("Ha pasado 1 segundo")
-                    }, 1000);
-                    llistar_mostrar[i].goBack();
-                 }
-                 return llistar_mostrar;
+            if (sessionStorage.save){ // Load game
+                let partida = JSON.parse(sessionStorage.save);
+                pairs = partida.pairs;
+                points = partida.points;
+                partida.cards.map(item=>{
+                    let it = Object.create(card);
+                    it.front = item.front;
+                    it.current = item.current;
+                    it.isDone = item.isDone;
+                    it.waiting = item.waiting;
+                    it.callback = call;
+                    cards.push(it);
+                    if (it.current != back && !it.waiting && !it.isDone) it.goBack();
+                    else if (it.waiting) lastCard = it;
+                });
+                return cards;
+            }
+            else return mix().map(item => { // New game
+                cards.push(Object.create(card, { front: {value:item}, callback: {value:call}}));
+                return cards[cards.length-1];
+            });
         },
         click: function (card){
             if (!card.clickable || flippedCount >= 2) return; // Si la carta no es clickeable, ya está volteada o ya hay dos cartas volteadas, no hacer nada
@@ -95,6 +93,7 @@ export var game = function(){
             else lastCard = card; // Primera carta
         },
         save: function (){
+            console.log("intentan guardar")
             var partida = {
                 uuid: localStorage.uuid,
                 pairs: pairs,
@@ -127,7 +126,7 @@ export var game = function(){
                 console.log(localStorage.save);
             })
             .finally(()=>{
-              window.location.replace("../");
+                window.location.assign("../index.html");
             });
         }
     }
