@@ -7,7 +7,7 @@ addEventListener('load', function() {
 
     document.getElementById('mode2').addEventListener('click', 
     function(){
-        window.location.assign("./phasergame.html");
+        window.location.assign("./phasergameinf.html");
         //Configurar a mode 2
     });
 });

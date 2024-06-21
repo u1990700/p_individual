@@ -17,7 +17,7 @@ export var game = function(){
             this.callback();
         }
     };
-    var options = JSON.parse(localStorage.options||JSON.stringify(default_options));
+    var options = JSON.parse(localStorage.optionsInf||JSON.stringify(default_options_inf)); //Opcions del modo infinit
     var lastCard;
     var pairs = options.pairs;
     var points = 100;
@@ -71,8 +71,8 @@ export var game = function(){
                 if (card.front === lastCard.front){
                     pairs--;
                     if (pairs <= 0){
-                        alert("Has ganado con " + points + " puntos!");
-                        window.location.assign("../"); //Aplicar nuevo nivel a partir de aqui
+                        alert("Has ganado con " + points + " puntos! Pasas al siguiente nivel");
+                        this.nextLevel();
                     }
                 }
                 else{
@@ -93,6 +93,16 @@ export var game = function(){
                 }, 1000);
             }
             else lastCard = card; // Primera carta
+        },
+        nextLevel: function () {
+            pairs *= 2; // Duplicar el número de parejas
+            points = 100; // Reiniciar puntos o ajustar según sea necesario
+            flippedCount = 0;
+            lastCard = null;
+
+             // Limpiar el juego anterior y re-inicializar
+             $('#game').empty();
+             this.cards = this.init(() => this.updateSRC());
         },
         save: function (){
             var partida = {
