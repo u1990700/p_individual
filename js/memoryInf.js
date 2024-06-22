@@ -69,6 +69,13 @@ export var game = function(){
 
             
         },
+        initTime: function (call){
+            if(sessionStorage.save){// Cargar temporizador
+                let partida = sessionStorage.save;
+                time = partida.time;
+            }
+            return time;
+        },
         click: function (card){
             if (!card.clickable || flippedCount >= 2) return; // Si la carta no es clickeable, ya está volteada o ya hay dos cartas volteadas, no hacer nada
             
@@ -82,11 +89,14 @@ export var game = function(){
                         //localStorage.setItem('pairs', pairs * 2); // Doblar los pares para el siguiente nivel
                         acumulado++;
                         options.pairs = acumulado;
-                        localStorage.setItem('optionsInf', JSON.stringify(options)); // Guardar optionsInf en localStorage
-                        
-                        options.time = time;
-                        console.log(options.time);
 
+                        if (options.time > 10){ //Reducimos el tiempo hasta un maximo de 10 segundos
+                            options.time = time-5; //Reducir el tiempo en cada nivel
+                            console.log("Tiempo" + options.time);
+                        }
+                        
+                        
+                        localStorage.setItem('optionsInf', JSON.stringify(options)); // Guardar optionsInf en localStorage
                         alert("Has ganado con " + points + " puntos!");
                         window.location.reload(); // Recargar la página
                     }
@@ -99,7 +109,9 @@ export var game = function(){
 
                     if (points <= 0){
                         alert ("Has perdido");
-                        options.pairs = 2; //Resetear los valores 
+                        //Resetear los valores
+                        options.pairs = 2; 
+                        options.time = 60; 
                         localStorage.setItem('optionsInf', JSON.stringify(options)); // Guardar optionsInf en localStorage
                         window.location.replace("../");
                     }

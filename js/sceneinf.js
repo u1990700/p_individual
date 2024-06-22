@@ -6,7 +6,7 @@ export class PlayScene extends Phaser.Scene {
         this.resources = [];
         this.cards = gController.init(() => null); // Inicializar cartas
 
-        this.timer = 60; // Tiempo inicial en segundos
+        this.timer = gController.initTime(() => null); // Tiempo inicial en segundos
         this.timerText = null; // Variable para almacenar el texto del contador
     }
 
@@ -28,8 +28,6 @@ export class PlayScene extends Phaser.Scene {
 
     loadTimer(){
         console.log("Cargamos el contador");
-        
-
     }
 
     create() {
