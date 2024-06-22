@@ -17,49 +17,57 @@ export var game = function(){
             this.callback();
         }
     };
-    var options = JSON.parse(localStorage.optionsInf||JSON.stringify(default_options_inf)); //Opcions del modo infinit
+
+
+    var options = JSON.parse(localStorage.optionsInf||JSON.stringify(default_options_inf));
     var lastCard;
     var pairs = options.pairs;
+    var acumulado = options.pairs;
     var points = 100;
-    var time = 1000;
+    var time = options.time;
     var lostPoints = 25;
     var flippedCount = 0; // Contador de cartas volteadas
     var punts = $('#score');
     punts.value = points;
 
+    var cards = [];
+
+
+    var mix = function(){
+        var items = resources.slice(); // Copiem l'array
+        items.sort(() => Math.random() - 0.5); // Aleatòria
+        items = items.slice(0, pairs); // Agafem els primers
+        items = items.concat(items);
+        return items.sort(() => Math.random() - 0.5); // Aleatòria
+    }
+
     return {
         init: function (call){
-                var items = resources.slice(); // Copiamos el array
-                items.sort(() => Math.random() - 0.5); // Aleatorio
-                items = items.slice(0, pairs); // Tomamos las primeras
-                items = items.concat(items);
-                items.sort(() => Math.random() - 0.5); // Aleatorio
+           if (sessionStorage.save){ // Load game
+                let partida = sessionStorage.save;
+                pairs = partida.pairs;
+                //acumulado = partida.pairs;
+                points = partida.points;
+                //time = partida.time;
+                partida.cards.map(item=>{
+                    let it = Object.create(card);
+                    it.front = item.front;
+                    it.current = item.current;
+                    it.isDone = item.isDone;
+                    it.waiting = item.waiting;
+                    it.callback = call;
+                    cards.push(it);
+                    if (it.current != back && !it.waiting && !it.isDone) it.goBack();
+                    else if (it.waiting) lastCard = it;
+                });
+                return cards;
+            }
+            else return mix().map(item => { // New game
+                cards.push(Object.create(card, { front: {value:item}, callback: {value:call}}));
+                return cards[cards.length-1];
+            });
 
-                var llistar_mostrar = items.map(item => Object.create(card, {front: {value:item}, callback: {value:call}}));
-    
-                // Ajuste del tiempo según la dificultad
-                if(options.difficulty == "normal"){
-                    time = 1000;
-                    lostPoints=25;
-                } else if (options.difficulty == "hard") {
-                    time = 500;
-                    lostPoints = 50;
-                } else if (options.difficulty == "easy") {
-                    time = 2000;
-                    lostPoints= 10;
-                }
-
-                // Las cartas se revelan durante 1 segundo
-                for(var i = 0;i < items.length; i++){
-                    llistar_mostrar[i].pointer = $('#c'+i);
-                    llistar_mostrar[i].pointer.attr("src", card.current);
-                    llistar_mostrar[i].goFront();
-                    setTimeout(() => {
-                        console.log("Ha pasado 1 segundo")
-                    }, 1000);
-                    llistar_mostrar[i].goBack();
-                 }
-                 return llistar_mostrar;
+            
         },
         click: function (card){
             if (!card.clickable || flippedCount >= 2) return; // Si la carta no es clickeable, ya está volteada o ya hay dos cartas volteadas, no hacer nada
@@ -71,8 +79,16 @@ export var game = function(){
                 if (card.front === lastCard.front){
                     pairs--;
                     if (pairs <= 0){
-                        alert("Has ganado con " + points + " puntos! Pasas al siguiente nivel");
-                        this.nextLevel();
+                        //localStorage.setItem('pairs', pairs * 2); // Doblar los pares para el siguiente nivel
+                        acumulado++;
+                        options.pairs = acumulado;
+                        localStorage.setItem('optionsInf', JSON.stringify(options)); // Guardar optionsInf en localStorage
+                        
+                        options.time = time;
+                        console.log(options.time);
+
+                        alert("Has ganado con " + points + " puntos!");
+                        window.location.reload(); // Recargar la página
                     }
                 }
                 else{
@@ -83,6 +99,8 @@ export var game = function(){
 
                     if (points <= 0){
                         alert ("Has perdido");
+                        options.pairs = 2; //Resetear los valores 
+                        localStorage.setItem('optionsInf', JSON.stringify(options)); // Guardar optionsInf en localStorage
                         window.location.replace("../");
                     }
                 }
@@ -93,18 +111,6 @@ export var game = function(){
                 }, 1000);
             }
             else lastCard = card; // Primera carta
-        },
-        nextLevel: function () {
-            console.log("siguiente nivel");
-            pairs *= 2; // Duplicar el número de parejas
-            points = 100; // Reiniciar puntos o ajustar según sea necesario
-            flippedCount = 0;
-            lastCard = null;
-
-             // Limpiar el juego anterior y re-inicializar
-             $('#game').empty();
-             this.cards = this.init(() => this.updateSRC());
-             
         },
         save: function (){
             var partida = {

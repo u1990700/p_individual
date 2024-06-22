@@ -1,61 +1,86 @@
 import { game as gController } from "./memoryInf.js";
 
-var game = $('#game');
-
-export class PlayScene extends Phaser.Scene{
-    constructor (){
+export class PlayScene extends Phaser.Scene {
+    constructor() {
         super('PlaySceneInf');
         this.resources = [];
-        this.cards = gController.init(()=>null); // Inicialitzar cartes
+        this.cards = gController.init(() => null); // Inicializar cartas
+
+        this.timer = 60; // Tiempo inicial en segundos
+        this.timerText = null; // Variable para almacenar el texto del contador
     }
 
-    preload() {  
-        this.cards.forEach((r)=>{
-            if (!this.resources.includes(r.front))
+    preload() {
+        this.loadCards();
+        this.loadTimer();
+    }
+
+    loadCards() {
+        this.resources = [];
+        this.cards.forEach((r) => {
+            if (!this.resources.includes(r.front)) {
                 this.resources.push(r.front);
+            }
         });
         this.resources.push("../resources/back.png");
-        this.resources.forEach((r)=>this.load.image(r,r)); // Primer paràmetre nom Segon paràmetre direcció
+        this.resources.forEach((r) => this.load.image(r, r)); // Primer parámetro nombre, segundo parámetro dirección
+    }
+
+    loadTimer(){
+        console.log("Cargamos el contador");
+        
+
     }
 
     create() {
         this.cameras.main.setBackgroundColor(0xBFFCFF);
+        this.createCards();
 
-        this.g_cards = this.physics.add.staticGroup();
-        this.cards.forEach((c, i)=> this.g_cards.create(50 + 100*i, 150, c.current));
+        const button = this.add.text(50, 650, 'Save', { fontSize: '32px', fill: '#000' }) // Crear el botón para guardar la partida
+            .setInteractive()
+            .on('pointerover', () => button.setStyle({ fill: '#ff0' }))
+            .on('pointerout', () => button.setStyle({ fill: '#000' }))
+            .on('pointerdown', () => this.Save());
 
-        this.g_cards.children.iterate((c, i) => {
-            c.setInteractive();
-            c.on('pointerup', ()=> gController.click(this.cards[i]));
+        this.timerText = this.add.text(50, 50, `Tiempo: ${this.timer}`, { fontSize: '32px', fill: '#000' });
+
+        this.timerEvent = this.time.addEvent({
+            delay: 1000, // Intervalo en milisegundos (1000ms = 1 segundo)
+            callback: this.updateTimer,
+            callbackScope: this,
+            loop: true // Repetir indefinidamente
         });
-
-        const button = this.add.text(50, 300, 'Save', { fontSize: '32px', fill: '#000' }) //Creem el boto per guardar la partida
-        .setInteractive()
-        .on('pointerover', () => button.setStyle({ fill: '#ff0' }))
-        .on('pointerout', () => button.setStyle({ fill: '#000' }))
-        .on('pointerdown', () => this.Save());
     }
 
     update() {
         this.g_cards.children.iterate((c, i) => c.setTexture(this.cards[i].current));
     }
 
-    Save(){ //Apliquem el que teniem a game.js a guardar la partida
-
-        gController.save();
-
-        gController.init(updateSRC).forEach(function(card, indx){
-            
-            game.append('<img id="c'+indx+'" class="card" title="card">');
-            card.pointer = $('#c'+indx);
-            card.pointer.on('click', () => gController.click(card));
-            card.pointer.attr("src", card.current);
-        });
-
-        function updateSRC(){
-            this.pointer.attr("src", this.current);
-        }
-        console.log("Guardar partida")
-    }
+    updateTimer() {
+        this.timer--; // Reducir el tiempo en cada frame
     
+        // Actualizar el texto del contador
+        this.timerText.setText(`Tiempo: ${this.timer}`);
+    
+        // Si el tiempo llega a cero, puedes manejar el evento de fin de juego aquí
+        if (this.timer <= 0) {
+            // Por ejemplo, mostrar un mensaje y reiniciar el juego
+            alert("¡Tiempo agotado!");
+            window.location.assign("../index.html"); // Recargar la página
+        }
+    }
+
+    Save() {
+        gController.save();
+    }
+
+    createCards() {
+        this.g_cards = this.physics.add.staticGroup();
+        this.cards.forEach((c, i) => this.g_cards.create(50 + 100 * (i % 6), 150 + 100 * Math.floor(i / 6), c.current));
+
+        this.g_cards.children.iterate((c, i) => {
+            c.setInteractive();
+            c.on('pointerup', () => gController.click(this.cards[i]));
+        });
+    }
 }
