@@ -18,12 +18,12 @@ addEventListener('load', function() {
         })
         .then(partida=>sessionStorage.save = partida)
         .catch(err=>sessionStorage.save = localStorage.save)
-        .finally(()=>window.location.assign("./html/phasergame.html"));
+        .finally(()=>window.location.assign("./html/phasergameinf.html"));
     });
 
     document.getElementById('options').addEventListener('click', 
     function(){
-        window.location.assign("./html/options.html");
+        window.location.assign("./html/optionsInf.html");
     });
 
     document.getElementById('ranking').addEventListener('click', 

@@ -17,16 +17,21 @@ export var game = function(){
             this.callback();
         }
     };
-    var options = JSON.parse(localStorage.options||JSON.stringify(default_options));
+
+
+    var options = JSON.parse(localStorage.optionsInf||JSON.stringify(default_options_inf));
     var lastCard;
     var pairs = options.pairs;
+    var acumulado = options.pairs;
     var points = 100;
-    var time = 1000;
+    var time = options.time;
     var lostPoints = 25;
     var flippedCount = 0; // Contador de cartas volteadas
     var punts = $('#score');
     punts.value = points;
-    var cards = []; // Llistat de cartes
+
+    var cards = [];
+
 
     var mix = function(){
         var items = resources.slice(); // Copiem l'array
@@ -35,12 +40,15 @@ export var game = function(){
         items = items.concat(items);
         return items.sort(() => Math.random() - 0.5); // Aleatòria
     }
+
     return {
         init: function (call){
-            if (sessionStorage.save){ // Load game
-                let partida = JSON.parse(sessionStorage.save);
+           if (sessionStorage.save){ // Load game
+                let partida = sessionStorage.save;
                 pairs = partida.pairs;
+                //acumulado = partida.pairs;
                 points = partida.points;
+                //time = partida.time;
                 partida.cards.map(item=>{
                     let it = Object.create(card);
                     it.front = item.front;
@@ -58,6 +66,15 @@ export var game = function(){
                 cards.push(Object.create(card, { front: {value:item}, callback: {value:call}}));
                 return cards[cards.length-1];
             });
+
+            
+        },
+        initTime: function (call){
+            if(sessionStorage.save){// Cargar temporizador
+                let partida = sessionStorage.save;
+                time = partida.time;
+            }
+            return time;
         },
         click: function (card){
             if (!card.clickable || flippedCount >= 2) return; // Si la carta no es clickeable, ya está volteada o ya hay dos cartas volteadas, no hacer nada
@@ -69,8 +86,19 @@ export var game = function(){
                 if (card.front === lastCard.front){
                     pairs--;
                     if (pairs <= 0){
+                        //localStorage.setItem('pairs', pairs * 2); // Doblar los pares para el siguiente nivel
+                        acumulado++;
+                        options.pairs = acumulado;
+
+                        if (options.time > 10){ //Reducimos el tiempo hasta un maximo de 10 segundos
+                            options.time = time-5; //Reducir el tiempo en cada nivel
+                            console.log("Tiempo" + options.time);
+                        }
+                        
+                        
+                        localStorage.setItem('optionsInf', JSON.stringify(options)); // Guardar optionsInf en localStorage
                         alert("Has ganado con " + points + " puntos!");
-                        window.location.assign("../");
+                        window.location.reload(); // Recargar la página
                     }
                 }
                 else{
@@ -81,6 +109,10 @@ export var game = function(){
 
                     if (points <= 0){
                         alert ("Has perdido");
+                        //Resetear los valores
+                        options.pairs = 2; 
+                        options.time = 60; 
+                        localStorage.setItem('optionsInf', JSON.stringify(options)); // Guardar optionsInf en localStorage
                         window.location.replace("../");
                     }
                 }
@@ -93,7 +125,6 @@ export var game = function(){
             else lastCard = card; // Primera carta
         },
         save: function (){
-            console.log("intentan guardar")
             var partida = {
                 uuid: localStorage.uuid,
                 pairs: pairs,
@@ -126,7 +157,7 @@ export var game = function(){
                 console.log(localStorage.save);
             })
             .finally(()=>{
-                window.location.assign("../index.html");
+              window.location.replace("../");
             });
         }
     }
