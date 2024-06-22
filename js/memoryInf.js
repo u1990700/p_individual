@@ -23,9 +23,9 @@ export var game = function(){
     var lastCard;
     var pairs = options.pairs;
     var acumulado = options.pairs;
-    var points = 100;
+    var points = 0;
+    var intentos = 4;
     var time = options.time;
-    var lostPoints = 25;
     var flippedCount = 0; // Contador de cartas volteadas
     var punts = $('#score');
     punts.value = points;
@@ -76,6 +76,14 @@ export var game = function(){
             }
             return time;
         },
+        initPoints: function (call){
+            if(sessionStorage.save){
+                let partida = sessionStorage.save;
+                points = partida.points;
+                console.log(points);
+            }
+            return points;
+        },
         click: function (card){
             if (!card.clickable || flippedCount >= 2) return; // Si la carta no es clickeable, ya está volteada o ya hay dos cartas volteadas, no hacer nada
             
@@ -85,10 +93,14 @@ export var game = function(){
             if (lastCard){ // Segunda carta   
                 if (card.front === lastCard.front){
                     pairs--;
+                    points++;
+
+                    //Falta meter como sumar los puntos  en la escena
                     if (pairs <= 0){
                         //localStorage.setItem('pairs', pairs * 2); // Doblar los pares para el siguiente nivel
                         acumulado++;
                         options.pairs = acumulado;
+                        options.points += points;
 
                         if (options.time > 10){ //Reducimos el tiempo hasta un maximo de 10 segundos
                             options.time = time-5; //Reducir el tiempo en cada nivel
@@ -97,21 +109,20 @@ export var game = function(){
                         
                         
                         localStorage.setItem('optionsInf', JSON.stringify(options)); // Guardar optionsInf en localStorage
-                        alert("Has ganado con " + points + " puntos!");
+                        alert("Llevas ganado " + options.points + " puntos!");
                         window.location.reload(); // Recargar la página
                     }
                 }
                 else{
                     [card, lastCard].forEach(c=>c.goBack());
-                    points-=lostPoints;
-                    punts.value = points;
-                    console.log(points); //mostrar puntuacion
-
-                    if (points <= 0){
+                    intentos--;
+                    console.log(intentos); //mostrar puntuacion
+                    if (intentos <= 0){
                         alert ("Has perdido");
                         //Resetear los valores
                         options.pairs = 2; 
                         options.time = 60; 
+                        options.points = 0;
                         localStorage.setItem('optionsInf', JSON.stringify(options)); // Guardar optionsInf en localStorage
                         window.location.replace("../");
                     }

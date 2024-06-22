@@ -55,10 +55,5 @@ export class PlayScene extends Phaser.Scene{
         function updateSRC(){
             this.pointer.attr("src", this.current);
         }
-
-       
-
-        console.log("Guardar partida")
-
     }
 }
