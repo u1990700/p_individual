@@ -18,7 +18,7 @@ addEventListener('load', function() {
         })
         .then(partida=>sessionStorage.save = partida)
         .catch(err=>sessionStorage.save = localStorage.save)
-        .finally(()=>window.location.assign("./html/phasergameinf.html"));
+        .finally(()=>window.location.assign("./html/phasergame.html"));
     });
 
     document.getElementById('options').addEventListener('click', 

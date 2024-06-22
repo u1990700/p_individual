@@ -8,6 +8,10 @@ export class PlayScene extends Phaser.Scene {
 
         this.timer = gController.initTime(() => null); // Tiempo inicial en segundos
         this.timerText = null; // Variable para almacenar el texto del contador
+
+        
+        this.points = gController.initPoints(() => null); // obtener la puntuacion
+        this.pointsText = null;
     }
 
     preload() {
@@ -33,14 +37,17 @@ export class PlayScene extends Phaser.Scene {
     create() {
         this.cameras.main.setBackgroundColor(0xBFFCFF);
         this.createCards();
-
+/*
         const button = this.add.text(50, 650, 'Save', { fontSize: '32px', fill: '#000' }) // Crear el botón para guardar la partida
             .setInteractive()
             .on('pointerover', () => button.setStyle({ fill: '#ff0' }))
             .on('pointerout', () => button.setStyle({ fill: '#000' }))
             .on('pointerdown', () => this.Save());
-
+*/
         this.timerText = this.add.text(50, 50, `Tiempo: ${this.timer}`, { fontSize: '32px', fill: '#000' });
+
+        this.pointsText = this.add.text(50,500,`Puntos: ${this.points}`, {fontSize: '32px', fill: '#000'});
+        console.log(this.points);
 
         this.timerEvent = this.time.addEvent({
             delay: 1000, // Intervalo en milisegundos (1000ms = 1 segundo)
@@ -59,6 +66,8 @@ export class PlayScene extends Phaser.Scene {
     
         // Actualizar el texto del contador
         this.timerText.setText(`Tiempo: ${this.timer}`);
+
+        
     
         // Si el tiempo llega a cero, puedes manejar el evento de fin de juego aquí
         if (this.timer <= 0) {
@@ -69,7 +78,7 @@ export class PlayScene extends Phaser.Scene {
     }
 
     Save() {
-        gController.save();
+       // gController.save();
     }
 
     createCards() {
