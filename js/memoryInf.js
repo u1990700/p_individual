@@ -95,6 +95,7 @@ export var game = function(){
             else lastCard = card; // Primera carta
         },
         nextLevel: function () {
+            console.log("siguiente nivel");
             pairs *= 2; // Duplicar el número de parejas
             points = 100; // Reiniciar puntos o ajustar según sea necesario
             flippedCount = 0;
@@ -103,6 +104,7 @@ export var game = function(){
              // Limpiar el juego anterior y re-inicializar
              $('#game').empty();
              this.cards = this.init(() => this.updateSRC());
+             
         },
         save: function (){
             var partida = {
